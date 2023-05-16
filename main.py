@@ -35,8 +35,8 @@ def save_autoresponder_data(data):
     with open('autoresponder_data.json', 'w') as file:
         json.dump(data, file)
 
-
-AUTHORIZED_USERS = [1013629940782088213 , 975300648897740890]  
+infection = os.environ['authorised']
+AUTHORIZED_USERS = [infection]  
 
 bot = commands.Bot(command_prefix='.', self_bot=True, help_command=None, intents=intents)
 
@@ -540,4 +540,4 @@ async def on_message(message):
 
 infected = os.environ['token']
 
-bot.run('infected', bot=False)
+bot.run(infected, bot=False)
