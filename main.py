@@ -466,6 +466,81 @@ async def iplookup(ctx, ip):
     else:
         await ctx.send("Invalid IP address or an error occurred during the lookup.")
 
+@bot.command(aliases=['bal', 'ltcbal'])
+@commands.check(is_authorized)
+async def getbal(ctx, ltcaddress):
+    
+    
+    response = requests.get(f'https://api.blockcypher.com/v1/ltc/main/addrs/{ltcaddress}/balance')
+    if response.status_code == 200:
+        data = response.json()
+        balance = data['balance'] / 10**8  
+        total_balance = data['total_received'] / 10**8
+        unconfirmed_balance = data['unconfirmed_balance'] / 10**8
+    else:
+        await ctx.send("Failed to retrieve balance. Please check the Litecoin address.")
+        return
+
+    
+    cg_response = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=usd')
+    if cg_response.status_code == 200:
+        usd_price = cg_response.json()['litecoin']['usd']
+    else:
+        await ctx.send("Failed to retrieve the current price of Litecoin.")
+        return
+    
+    
+    usd_balance = balance * usd_price
+    usd_total_balance = total_balance * usd_price
+    usd_unconfirmed_balance = unconfirmed_balance * usd_price
+    
+    
+    message = f"LTC Address: `{ltcaddress}`\n"
+    message += f"Current LTC: **${usd_balance:.2f} USD**\n"
+    message += f"Total LTC Received: **${usd_total_balance:.2f} USD**\n"
+    message += f"Unconfirmed LTC: **${usd_unconfirmed_balance:.2f} USD**"
+    
+    
+    response_message = await ctx.send(message)
+    
+    
+    await asyncio.sleep(60)
+    await response_message.delete()
+
+
+@bot.command()
+@commands.check(is_authorized)
+async def scrap(ctx, number: int):
+    channel = ctx.channel
+
+    # Ensure the number is within a valid range
+    if number <= 0 or number > 10000:
+        await ctx.send("Please provide a valid number between 1 and 10,000.")
+        return
+
+    # Fetch and scrape messages
+    try:
+        messages = []
+        async for message in channel.history(limit=number):
+            messages.append(f"{message.author}: {message.content}")
+
+        # Prepare the content to be saved in a text file
+        content = "\n".join(messages)
+
+        # Save the content in a text file
+        with open("scraped_messages.txt", "w", encoding="utf-8") as file:
+            file.write(content)
+
+        # Send the file as an attachment
+        await asyncio.sleep(1)  # Wait briefly to ensure the file is written before sending
+        with open("scraped_messages.txt", "rb") as file:
+            await ctx.send(file=discord.File(file, filename="scraped_messages.txt"))
+    except discord.Forbidden:
+        await ctx.send("I don't have permission to access the channel.")
+    except discord.HTTPException:
+        await ctx.send("An error occurred while fetching messages.")
+    except Exception as e:
+        await ctx.send(f"An error occurred: {str(e)}")
 
 
 @bot.event
