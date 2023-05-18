@@ -2,11 +2,12 @@ import os
 import discord
 from discord.ext import commands, tasks
 import json
-import asyncio
+import asyncio 
 from pyfiglet import Figlet
 from faker import Faker
 from discord import Member
-from asyncio import sleep
+from asyncio import sleep 
+from dotenv import load_dotenv
 import re
 import requests
 import aiohttp
@@ -19,6 +20,7 @@ import platform
 intents = discord.Intents.default()
 intents.voice_states = True
 
+load_dotenv()
 
 auto_messages = {}
 
