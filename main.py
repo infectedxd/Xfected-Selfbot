@@ -37,7 +37,7 @@ def save_autoresponder_data(data):
     with open('autoresponder_data.json', 'w') as file:
         json.dump(data, file)
 
-infection = os.environ['authorised']
+#infection = os.environ['authorised']
 AUTHORIZED_USERS = [infection]  
 
 bot = commands.Bot(command_prefix='.', self_bot=True, help_command=None, intents=intents)
@@ -333,18 +333,32 @@ async def ping(ctx):
 async def connectvc(ctx, channel_id):
     try:
         channel = bot.get_channel(int(channel_id))
+
         if channel is None:
             return await ctx.send("Invalid channel ID. Please provide a valid voice channel ID.")
 
-        voice_channel = await channel.connect()
-        await ctx.send(f"Connected to voice channel: {channel.name}")
+        if isinstance(channel, discord.VoiceChannel):
+            permissions = channel.permissions_for(ctx.guild.me)
 
-        
-        await channel.send("Hello, I have connected to this voice channel!")
+            if not permissions.connect or not permissions.speak:
+                return await ctx.send("I don't have permissions to connect or speak in that channel.")
+
+            voice_channel = await channel.connect()
+            await ctx.send(f"Connected to voice channel: {channel.name}")
+
+            await channel.send("Hello, I have connected to this voice channel!")
+
+        else:
+            await ctx.send("This is not a voice channel. Please provide a valid voice channel ID.")
     except discord.errors.ClientException:
-        await ctx.send("Already connected to a voice channel.")
+        await ctx.send("I'm already connected to a voice channel.")
+    except discord.Forbidden:
+        await ctx.send("I don't have permission to perform this action.")
     except ValueError:
         await ctx.send("Invalid channel ID. Please provide a valid voice channel ID.")
+    except Exception as e:
+        await ctx.send(f"An error occurred: {e}")
+
 
 
 @bot.command(aliases=['purge'])
@@ -379,20 +393,18 @@ async def selfbot(ctx):
     total_commands = len(bot.commands)
     github_link = "https://github.com/zaddyinfected"
 
-    # Retrieve RAM information
+    
     ram_info = psutil.virtual_memory()
-    total_ram = round(ram_info.total / (1024 ** 3), 2)  # Convert to GB
-    used_ram = round(ram_info.used / (1024 ** 3), 2)  # Convert to GB
-    sowadop = "Sowad OP"
+    total_ram = round(ram_info.total / (1024 ** 3), 2)  
+    used_ram = round(ram_info.used / (1024 ** 3), 2)  
 
-    # Retrieve OS information
+    
     os_info = platform.platform()
 
     message = f"**__Infected S3LFB0T__**\n\n" \
               f"**• Vers: {version}\n" \
               f"• Lang: {language}\n" \
               f"• Created By: {author}\n" \
-              f"• Owner By: {sowadop}\n" \
               f"• Total Cmds: {total_commands}\n" \
               f"• Total RAM: {total_ram} GB\n" \
               f"• Used RAM: {used_ram} GB\n" \
@@ -515,26 +527,26 @@ async def getbal(ctx, ltcaddress):
 async def scrap(ctx, number: int):
     channel = ctx.channel
 
-    # Ensure the number is within a valid range
+    
     if number <= 0 or number > 10000:
         await ctx.send("Please provide a valid number between 1 and 10,000.")
         return
 
-    # Fetch and scrape messages
+    
     try:
         messages = []
         async for message in channel.history(limit=number):
             messages.append(f"{message.author}: {message.content}")
 
-        # Prepare the content to be saved in a text file
+        
         content = "\n".join(messages)
 
-        # Save the content in a text file
+        
         with open("scraped_messages.txt", "w", encoding="utf-8") as file:
             file.write(content)
 
-        # Send the file as an attachment
-        await asyncio.sleep(1)  # Wait briefly to ensure the file is written before sending
+        
+        await asyncio.sleep(1)  
         with open("scraped_messages.txt", "rb") as file:
             await ctx.send(file=discord.File(file, filename="scraped_messages.txt"))
     except discord.Forbidden:
