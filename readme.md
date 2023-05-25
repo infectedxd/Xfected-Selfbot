@@ -5,7 +5,7 @@ It requires the user to provide their Discord user ID on line 41 and a token in 
 
 ## Prerequisites
 
-- Node.js installed on your system
+- Python installed on your system
 - Discord user ID (to be added to line 41)
 - Discord selfbot token (to be added as an environment variable)
 
@@ -16,24 +16,32 @@ It requires the user to provide their Discord user ID on line 41 and a token in 
    ```bash
    git clone https://github.com/zaddyinfected/Infected-Self-Bot-x1
    ```
-
-2. Navigate to the project directory:
+   
+   or
+   
+   Fork the replit
+   
+   ```bash
+   https://replit.com/@terimakafan14/Infected-Self-Bot-V1
+   ```
+   
+3. Navigate to the project directory:
 
    ```bash
    cd Infected-Self-Bot-x1
    ```
 
-3. Install the required dependencies:
+4. Install the required dependencies:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Open the `python main.py` file in a text editor and go to line 41.
+5. Open the `python main.py` file in a text editor and go to line 41.
 
-5. Replace `YOUR_USER_ID` with your Discord user ID.
+6. Replace `YOUR_USER_ID` with your Discord user ID.
 
-6. Set your Discord selfbot token as an environment variable named `token`.
+7. Set your Discord selfbot token as an environment variable named `token`.
 
 ## Usage
 
