@@ -19,11 +19,8 @@ It requires the user to provide their Discord user ID on line 41 and a token in 
    
    or
    
-   Fork the replit
-   
-   ```bash
-   https://replit.com/@terimakafan14/Infected-Self-Bot-V1
-   ```
+   Fork the [replit](https://replit.com/@terimakafan14/Infected-Self-Bot-V1)
+  
    
 3. Navigate to the project directory:
 
