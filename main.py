@@ -1,3 +1,10 @@
+'''
+1. install modules from requirements.txt
+2. use secrets/env for userid and token
+3. any support regarding 24.7 hosting? join main serv https://discord.gg/xclouds
+
+'''
+
 import os
 import discord
 from discord.ext import commands, tasks
@@ -7,7 +14,7 @@ from pyfiglet import Figlet
 from faker import Faker
 from discord import Member
 from asyncio import sleep 
-from dotenv import load_dotenv
+from decouple import config
 import re
 import requests
 import aiohttp
@@ -15,12 +22,18 @@ import random
 import uuid
 import psutil
 import platform
+import colorama
+from colorama import Fore, Style
+'''
+1. install modules from requirements.txt
+2. use secrets/env for userid and token
+3. any support regarding 24.7 hosting? join main serv https://discord.gg/xclouds
 
+'''
+colorama.init()
 
 intents = discord.Intents.default()
 intents.voice_states = True
-
-load_dotenv()
 
 auto_messages = {}
 
@@ -37,28 +50,15 @@ def save_autoresponder_data(data):
     with open('autoresponder_data.json', 'w') as file:
         json.dump(data, file)
 
-#infection = os.environ['authorised']
+infection = int(config("userid"))
 AUTHORIZED_USERS = [infection]  
 
 bot = commands.Bot(command_prefix='.', self_bot=True, help_command=None, intents=intents)
 
 fake = Faker()
 
-
 def is_authorized(ctx):
     return ctx.author.id in AUTHORIZED_USERS
-
-async def auto_message_scheduler():
-    await bot.wait_until_ready()
-    while not bot.is_closed():
-        for task_id, task_data in auto_messages.items():
-            if task_data['count'] == 0:
-                del auto_messages[task_id]
-            elif asyncio.get_event_loop().time() >= task_data['next_run']:
-                bot.loop.create_task(send_auto_message(task_id, task_data['channel_id'], task_data['message']))
-        await asyncio.sleep(1)
-
-bot.loop.create_task(auto_message_scheduler())
 
 
 @bot.command()
@@ -98,108 +98,16 @@ async def listar(ctx):
 async def spam(ctx, times: int, *, message):
     for _ in range(times):
         await ctx.send(message)
-        await asyncio.sleep(0.1)  
-
-
-@bot.command(aliases=['am'])
-@commands.check(is_authorized)
-async def automessage(ctx):
-    def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
-
-    await ctx.send("Please provide the channel ID for the auto message:")
-    await asyncio.sleep(2)  
-    try:
-        channel_id_msg = await bot.wait_for('message', check=check, timeout=30)
-        channel_id = int(channel_id_msg.content)
-    except asyncio.TimeoutError:
-        return await ctx.send("Timeout. Please try again.")
-    except ValueError:
-        return await ctx.send("Invalid channel ID. Please try again.")
-
-    await ctx.send("Please provide the interval (in seconds) between messages:")
-    await asyncio.sleep(2)  
-    try:
-        interval_msg = await bot.wait_for('message', check=check, timeout=30)
-        interval = int(interval_msg.content)
-        if interval < 5:
-            return await ctx.send("Interval should be at least 5 seconds.")
-    except asyncio.TimeoutError:
-        return await ctx.send("Timeout. Please try again.")
-    except ValueError:
-        return await ctx.send("Invalid interval. Please try again.")
-
-    await ctx.send("Please provide the number of times to send the message:")
-    await asyncio.sleep(2)  
-    try:
-        count_msg = await bot.wait_for('message', check=check, timeout=30)
-        count = int(count_msg.content)
-    except asyncio.TimeoutError:
-        return await ctx.send("Timeout. Please try again.")
-    except ValueError:
-        return await ctx.send("Invalid count. Please try again.")
-
-    await ctx.send("Please provide the message content:")
-    await asyncio.sleep(2)  
-    try:
-        message = await bot.wait_for('message', check=check, timeout=30)
-        message_content = message.content
-    except asyncio.TimeoutError:
-        return await ctx.send("Timeout. Please try again.")
-
-    task_id = str(uuid.uuid4())
-    if len(auto_messages) >= 3:
-        return await ctx.send("Maximum limit for auto messages reached.")
-    else:
-        auto_messages[task_id] = {
-            'channel_id': channel_id,
-            'message': message_content,
-            'interval': interval,
-            'count': count,
-            'next_run': asyncio.get_event_loop().time() + interval
-        }
-        await ctx.send(f"Auto message with ID: {task_id} set successfully.")
-
-
-
-@bot.command(aliases=['sam'])
-@commands.check(is_authorized)
-async def stopauto(ctx, task_id: str):
-    if task_id in auto_messages:
-        del auto_messages[task_id]
-        await ctx.send(f"Auto message with ID: {task_id} stopped successfully.")
-    else:
-        await ctx.send(f"Auto message with ID: {task_id} not found.")
-
-async def send_auto_message(task_id, channel_id, message):
-    channel = bot.get_channel(channel_id)
-    if channel:
-        await channel.send(message)
-    auto_messages[task_id]['count'] -= 1
-    auto_messages[task_id]['next_run'] = asyncio.get_event_loop().time() + auto_messages[task_id]['interval']
-
-
-
-@bot.command()
-@commands.check(is_authorized)
-async def listauto(ctx):
-    if auto_messages:
-        for task_id, task_data in auto_messages.items():
-            channel = bot.get_channel(task_data['channel_id'])
-            remaining_time = task_data['next_run'] - asyncio.get_event_loop().time()
-            await ctx.send(f"**Task ID** \n⇁{task_id} \n\n**Channel** \n⇁{channel.name if channel else 'Unknown'} \n\n**Interval** \n⇁{task_data['interval']}s \n\n**Count** \n⇁{task_data['count']} \n\n**Remaining Time** \n⇁{remaining_time:.2f}s \n\n**Message** \n⇁{task_data['message']}\n\n")
-    else:
-        await ctx.send("No auto messages currently set.")
-          
+        await asyncio.sleep(0.1)      
 
 @bot.command()
 @commands.check(is_authorized)
 async def calc(ctx, *, expression):
     try:
         result = eval(expression)
-        await ctx.send(f'Result: `{result}`')
+        await ctx.send(f'**{result}**')
     except:
-        await ctx.send('Invalid expression.')
+        await ctx.send('Invalid expr')
 
 
 @bot.command(aliases=['mode'])
@@ -228,9 +136,9 @@ async def help(ctx):
     command_list = bot.commands
     sorted_commands = sorted(command_list, key=lambda x: x.name)
 
-    response = "I N F E C T E D  S 3 L F  B O T\n\n"
+    response = "**I N F E C T E D  S 3 L F  B O T x1.5**\n\n"
     for command in sorted_commands:
-        response += f"⁍ {command.name}\n"
+        response += f"_{command.name}_, "
 
     await ctx.send(response)
 
@@ -268,12 +176,12 @@ async def hack(ctx, member: Member = None):
     member = member or ctx.author
 
     hacking_messages = [
-        "Hacking into the mainframe...",
+        "Infecting into the mainframe...",
         "Caching data...",
         "Decrypting security protocols...",
         "Extracting personal information...",
         "Compiling user profile...",
-        "Hacking complete!"
+        "Infection complete!"
     ]
 
     progress_message = await ctx.send("Hacking user...")  
@@ -325,7 +233,7 @@ async def ping(ctx):
     latency = round(bot.latency * 1000)  
 
     
-    await ctx.send(f'Pong! Latency: {latency}ms')
+    await ctx.send(f'**~ {latency}ms**')
 
 
 @bot.command(aliases=['247'])
@@ -387,7 +295,7 @@ async def clear(ctx, times: int):
 @bot.command(aliases=['info', 'stats'])
 @commands.check(is_authorized)
 async def selfbot(ctx):
-    version = "Infected x1"
+    version = "Infected x1.5"
     language = "Python"
     author = "I N F E C T E D"
     total_commands = len(bot.commands)
@@ -600,7 +508,10 @@ async def on_message(message):
 
 @bot.event
 async def on_ready():
-    print(f'Bot connected as {bot.user}')
+    print(f'{Fore.GREEN}Selfbot connected as {bot.user.name}{Style.RESET_ALL}')
+    print(f'{Fore.YELLOW}Dev: I N F E C T E D{Style.RESET_ALL}')
+    print(f'{Fore.CYAN}Version: x1.5{Style.RESET_ALL}')
+    print(f'{Fore.MAGENTA}Server: https://discord.gg/xclouds{Style.RESET_ALL}')
 
 
 @bot.event
@@ -627,6 +538,8 @@ async def on_message(message):
 
     await bot.process_commands(message)  
 
-infected = os.environ['token']
+infected = config('token')
 
-bot.run(infected, bot=False)
+if __name__ == "__main__":
+    bot.load_extension("automsg")
+    bot.run(infected, bot=False)
