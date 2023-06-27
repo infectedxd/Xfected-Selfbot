@@ -1,6 +1,6 @@
-# Infected X1 Discord Bot
+# Infected X1.5 Discord Bot
 
-Infected X1 is a Discord selfbot written in Python 
+Infected X1.5 is a Discord selfbot written in Python 
 It requires the user to provide their Discord user ID and a token in the environment variables.
 
 ## Prerequisites
@@ -14,12 +14,12 @@ It requires the user to provide their Discord user ID and a token in the environ
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/zaddyinfected/Infected-Self-Bot-x1
+   git clone https://github.com/zaddyinfected/Infected-Self-Bot-x1.5
    ```
    
    or
    
-   Fork the [replit](https://replit.com/@terimakafan14/Infected-Self-Bot-V1)
+   Fork the [replit](https://replit.com/@terimakafan14/Infected-Self-Bot-V1.5)
   
    
 3. Navigate to the project directory:
