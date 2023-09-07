@@ -1,13 +1,13 @@
-# Infected X1.5 Discord Bot
+# Infected X1.5 Selfbot
 
 Infected X1.5 is a Discord selfbot written in Python 
-It requires the user to provide their Discord user ID and a token in the environment variables.
+It requires the user to provide their Discord user ID and a token in the env.
 
 ## Prerequisites
 
 - Python installed on your system
-- Discord user ID (to be added as an environment variable)
-- Discord selfbot token (to be added as an environment variable)
+- Discord user ID (to be added as an env)
+- Discord selfbot token (to be added as an env)
 
 ## Installation
 
@@ -25,7 +25,7 @@ It requires the user to provide their Discord user ID and a token in the environ
 3. Navigate to the project directory:
 
    ```bash
-   cd Infected-Self-Bot-x1
+   cd Infected-Self-Bot-x1.5
    ```
 
 4. Install the required dependencies:
@@ -36,9 +36,9 @@ It requires the user to provide their Discord user ID and a token in the environ
 
 5. Open the `python main.py` file in a text editor and go to line 41.
 
-6. Set your Discord User ID as an environment variable named `userid`.
+6. Set your Discord User ID as an env named `userid`.
 
-7. Set your Discord selfbot token as an environment variable named `token`.
+7. Set your Discord selfbot token as an env named `token`.
 
 ## Usage
 
