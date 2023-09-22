@@ -34,7 +34,7 @@ It requires the user to provide their Discord user ID and a token in the env.
    pip install -r requirements.txt
    ```
 
-5. Open the `python main.py` file in a text editor and go to line 41.
+5. Create a new file as `.env` and open it
 
 6. Set your Discord User ID as an env named `userid`.
 
