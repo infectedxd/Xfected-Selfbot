@@ -1,7 +1,7 @@
 discord.py==1.7.3
-pyfiglet==0.8.post1
-faker==9.3.1
-psutil==5.8.0
+pyfiglet
+faker
+psutil
 python-decouple
 requests
 colorama
