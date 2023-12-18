@@ -1,10 +1,3 @@
-'''
-1. install modules from requirements.txt
-2. use secrets/env for userid and token
-3. any support regarding 24.7 hosting? join main serv https://discord.gg/xclouds
-
-'''
-
 import os
 import discord
 from discord.ext import commands, tasks
@@ -24,12 +17,7 @@ import psutil
 import platform
 import colorama
 from colorama import Fore, Style
-'''
-1. install modules from requirements.txt
-2. use secrets/env for userid and token
-3. any support regarding 24.7 hosting? join main serv https://discord.gg/xclouds
 
-'''
 colorama.init()
 
 intents = discord.Intents.default()
@@ -300,6 +288,7 @@ async def selfbot(ctx):
     author = "I N F E C T E D"
     total_commands = len(bot.commands)
     github_link = "https://github.com/zaddyinfected"
+    prem_link = "https://infected.store/infectcord"
 
     
     ram_info = psutil.virtual_memory()
@@ -317,7 +306,8 @@ async def selfbot(ctx):
               f"• Total RAM: {total_ram} GB\n" \
               f"• Used RAM: {used_ram} GB\n" \
               f"• Operating System: {os_info}\n\n" \
-              f"• GitHub: {github_link} **"
+              f"• GitHub: {github_link}\n**" \
+              f"• [Buy Premium Version]({prem_link})"
 
     await ctx.send(message)
 
@@ -343,11 +333,18 @@ async def fakenitro(ctx):
     nitro_months = random.randint(1, 12)
 
     
-    fake_link = f"discord.gift/F4K3N1TR0-{nitro_months}M"
+    fake_link = f"discord.gift/infectcord-{nitro_months}M"
 
     
     await ctx.send(f"\n{fake_link}")
 
+@bot.command()
+async def premium(ctx):
+    infecttcord = "# Upgrade to Infectcord for exclusive features and benefits! Boost Your Selfbot RN"
+    infecttcord2 = "- Infectcord Premium includes:\n\n1. AFK Cmds \n2. Nitro Sniper\n3. Status Rotator\n 4. Custom Vouchs\n\nLearn more at: https://infected.store/infectcord"
+
+    await ctx.send(infecttcord)
+    await ctx.send(infecttcord2)
 
 @bot.command(aliases=['scan'])
 @commands.check(is_authorized)
@@ -511,7 +508,7 @@ async def on_ready():
     print(f'{Fore.GREEN}Selfbot connected as {bot.user.name}{Style.RESET_ALL}')
     print(f'{Fore.YELLOW}Dev: I N F E C T E D{Style.RESET_ALL}')
     print(f'{Fore.CYAN}Version: x1.5{Style.RESET_ALL}')
-    print(f'{Fore.MAGENTA}Server: https://discord.gg/xclouds{Style.RESET_ALL}')
+    print(f'{Fore.MAGENTA}Server: https://discord.gg/infection{Style.RESET_ALL}')
 
 
 @bot.event
