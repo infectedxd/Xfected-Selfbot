@@ -339,6 +339,7 @@ async def fakenitro(ctx):
     await ctx.send(f"\n{fake_link}")
 
 @bot.command()
+@commands.check(is_authorized)
 async def premium(ctx):
     infecttcord = "# Upgrade to Infectcord for exclusive features and benefits! Boost Your Selfbot RN"
     infecttcord2 = "- Infectcord Premium includes:\n\n1. AFK Cmds \n2. Nitro Sniper\n3. Status Rotator\n 4. Custom Vouchs\n\nLearn more at: https://infected.store/infectcord"
