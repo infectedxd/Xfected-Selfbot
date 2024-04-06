@@ -37,7 +37,7 @@ def save_autoresponder_data(data):
 
 infection = int(config("userid"))
 AUTHORIZED_USERS = [infection]  
-prefix = config('PREFIX', default='')
+prefix = config('prefix', default='')
 bot = commands.Bot(command_prefix=prefix, self_bot=True, help_command=None)
 
 fake = Faker()
@@ -52,18 +52,18 @@ async def addar(ctx, trigger, *, response):
     autoresponder_data = load_autoresponder_data()
     autoresponder_data[trigger] = response
     save_autoresponder_data(autoresponder_data)
-    await ctx.send(f'Autoresponder added: `{trigger}` -> `{response}`')
+    await ctx.send(f' # AR added \n- `{trigger} -> {response}`', delete_after=10)
 
 @bot.command()
 @commands.check(is_authorized)
-async def removear(ctx, trigger):
+async def deletear(ctx, trigger):
     autoresponder_data = load_autoresponder_data()
     if trigger in autoresponder_data:
         del autoresponder_data[trigger]
         save_autoresponder_data(autoresponder_data)
-        await ctx.send(f'Autoresponder removed: `{trigger}`')
+        await ctx.send(f'AR deleted \n- `{trigger}`', delete_after=10)
     else:
-        await ctx.send('Autoresponder not found.')
+        await ctx.send('AR not found', delete_after=10)
 
 @bot.command()
 @commands.check(is_authorized)
@@ -72,10 +72,10 @@ async def listar(ctx):
     if autoresponder_data:
         response = 'Autoresponders:\n'
         for trigger, response_text in autoresponder_data.items():
-            response += f'`{trigger}` -> `{response_text}`\n'
-        await ctx.send(response)
+            response += f'- **{trigger}** -> ***{response_text}***\n'
+        await ctx.send(response, delete_after=10)
     else:
-        await ctx.send('No autoresponders found.')
+        await ctx.send('No ARs', delete_after=10)
 
 
 @bot.command()
@@ -88,11 +88,16 @@ async def spam(ctx, times: int, *, message):
 @bot.command()
 @commands.check(is_authorized)
 async def calc(ctx, *, expression):
-    try:
-        result = eval(expression)
-        await ctx.send(f'**{result}**')
-    except:
-        await ctx.send('Invalid expr')
+    pattern = r'^[\d\s()+\-*/.]*$'
+    if re.match(pattern, expression):
+        try:
+            result = eval(expression)
+            await ctx.send(f'**{result}**', delete_after=10)
+        except Exception as e:
+            await ctx.send('An error occurred', delete_after=10)
+            print(e)
+    else:
+        await ctx.send('Invalid', delete_after=10)
 
 
 @bot.command(aliases=['mode'])
@@ -102,7 +107,7 @@ async def status(ctx, activity_type, *, text):
     if activity_type == 'playing':
         activity = discord.Game(name=text)
     elif activity_type == 'streaming':
-        activity = discord.Streaming(name=text, url='https://www.twitch.tv/infected')
+        activity = discord.Streaming(name=text, url='https://www.twitch.tv/infectedxd')
     elif activity_type == 'listening':
         activity = discord.Activity(type=discord.ActivityType.listening, name=text)
     elif activity_type == 'watching':
@@ -110,9 +115,9 @@ async def status(ctx, activity_type, *, text):
 
     if activity:
         await bot.change_presence(activity=activity)
-        await ctx.send(f'Status updated: {activity_type} {text}')
+        await ctx.send(f'Status updated: {activity_type} {text}', delete_after=10)
     else:
-        await ctx.send('Invalid activity type. Available types: playing, streaming, listening, watching')
+        await ctx.send('- Invalid activity\n- Activies Supported\n\n - playing, streaming, listening, watching', delete_after=10)
 
 
 @bot.command(aliases=['h'])
@@ -121,11 +126,11 @@ async def help(ctx):
     command_list = bot.commands
     sorted_commands = sorted(command_list, key=lambda x: x.name)
 
-    response = "**I N F E C T E D  S 3 L F  B O T x1.5**\n\n"
+    response = "**X F E C T E D**\n\n"
     for command in sorted_commands:
         response += f"_{command.name}_, "
 
-    await ctx.send(response)
+    await ctx.send(response, delete_after=10)
 
 
 @bot.command()
@@ -143,7 +148,6 @@ async def userinfo(ctx, member: discord.Member = None):
 
     user_info = [
         f"• Username: {member.name}",
-        f"• Discriminator: {member.discriminator}",
         f"• ID: {member.id}",
         f"• Nickname: {member.nick}",
         f"• Status: {member.status}",
@@ -152,7 +156,7 @@ async def userinfo(ctx, member: discord.Member = None):
     ]
 
     response = '\n'.join(user_info)
-    await ctx.send(f"User Info:\n{response}")
+    await ctx.send(f"# **Xfected WhoIs**\n{response}", delete_after=10)
 
 
 @bot.command()
@@ -172,7 +176,7 @@ async def hack(ctx, member: Member = None):
     progress_message = await ctx.send("Hacking user...")  
 
     for message in hacking_messages:
-        await sleep(2)  
+        await sleep(2)
         await progress_message.edit(content=message)
 
     height_cm = fake.random_int(min=150, max=200)
@@ -208,17 +212,15 @@ async def avatar(ctx, member: Member = None):
     member = member or ctx.author
 
     avatar_url = member.avatar_url_as(format="png")
-    await ctx.send(f"Avatar of {member.mention}: {avatar_url}")
+    await ctx.send(f"[Xfected]({avatar_url})", delete_after=45)
 
 
 @bot.command()
 @commands.check(is_authorized)
 async def ping(ctx):
-    
     latency = round(bot.latency * 1000)  
-
     
-    await ctx.send(f'**~ {latency}ms**')
+    await ctx.send(f'**~ {latency}ms**', delete_after=10)
 
 
 @bot.command(aliases=['247'])
@@ -228,29 +230,29 @@ async def connectvc(ctx, channel_id):
         channel = bot.get_channel(int(channel_id))
 
         if channel is None:
-            return await ctx.send("Invalid channel ID. Please provide a valid voice channel ID.")
+            return await ctx.send("Invalid channel ID. Please provide a valid voice channel ID.", delete_after=10)
 
         if isinstance(channel, discord.VoiceChannel):
             permissions = channel.permissions_for(ctx.guild.me)
 
             if not permissions.connect or not permissions.speak:
-                return await ctx.send("I don't have permissions to connect or speak in that channel.")
+                return await ctx.send("I don't have permissions to connect or speak in that channel.", delete_after=10)
 
             voice_channel = await channel.connect()
-            await ctx.send(f"Connected to voice channel: {channel.name}")
+            await ctx.send(f"Connected to voice channel: {channel.name}", delete_after=10)
 
-            await channel.send("Hello, I have connected to this voice channel!")
+            await channel.send("Hello, I have connected to this voice channel!", delete_after=10)
 
         else:
-            await ctx.send("This is not a voice channel. Please provide a valid voice channel ID.")
+            await ctx.send("This is not a voice channel. Please provide a valid voice channel ID.", delete_after=10)
     except discord.errors.ClientException:
-        await ctx.send("I'm already connected to a voice channel.")
+        await ctx.send("I'm already connected to a voice channel.", delete_after=10)
     except discord.Forbidden:
-        await ctx.send("I don't have permission to perform this action.")
+        await ctx.send("I don't have permission to perform this action.", delete_after=10)
     except ValueError:
-        await ctx.send("Invalid channel ID. Please provide a valid voice channel ID.")
+        await ctx.send("Invalid channel ID. Please provide a valid voice channel ID.", delete_after=10)
     except Exception as e:
-        await ctx.send(f"An error occurred: {e}")
+        await ctx.send(f"An error occurred: {e}", delete_after=10)
 
 
 
@@ -280,11 +282,11 @@ async def clear(ctx, times: int):
 @bot.command(aliases=['info', 'stats'])
 @commands.check(is_authorized)
 async def selfbot(ctx):
-    version = "Infected x1.5"
-    language = "Python"
+    version = "Xfected 2.0"
+    language = "PY"
     author = "I N F E C T E D"
     total_commands = len(bot.commands)
-    github_link = "https://github.com/zaddyinfected"
+    github_link = "https://github.com/infectedxd"
     prem_link = "https://infected.store/infectcord"
 
     
@@ -295,7 +297,7 @@ async def selfbot(ctx):
     
     os_info = platform.platform()
 
-    message = f"**__Infected S3LFB0T__**\n\n" \
+    message = f"**X F E C T E D**\n\n" \
               f"**• Vers: {version}\n" \
               f"• Lang: {language}\n" \
               f"• Created By: {author}\n" \
@@ -339,12 +341,12 @@ async def fakenitro(ctx):
 @commands.check(is_authorized)
 async def premium(ctx):
     infecttcord = "# Upgrade to Infectcord for exclusive features and benefits! Boost Your Selfbot RN"
-    infecttcord2 = "- Infectcord Premium includes:\n\n1. AFK Cmds \n2. Nitro Sniper\n3. Status Rotator\n 4. Custom Vouchs\n\nLearn more at: https://infected.store/infectcord"
+    infecttcord2 = "- Infectcord Premium includes:\n\n1. AFK Cmds \n2. Nitro Sniper\n3. Status Rotator\n 4. LTC Sender\n\nLearn more at: https://infected.store/infectcord"
 
     await ctx.send(infecttcord)
     await ctx.send(infecttcord2)
 
-@bot.command(aliases=['scan'])
+@bot.command(aliases=['nscan'])
 @commands.check(is_authorized)
 async def nickscan(ctx):
     
@@ -373,7 +375,7 @@ async def iplookup(ctx, ip):
 
         current_time_formatted = f"<t:{int(current_time_unix)}:f>"
         
-        message = f"IP Lookup Results for {ip}:\n"
+        message = f"Xfected IP Lookup - {ip}:\n"
         message += f"Country: {country}\n"
         message += f"City: {city}\n"
         message += f"ISP: {isp}\n"
@@ -411,18 +413,14 @@ async def getbal(ctx, ltcaddress):
     usd_total_balance = total_balance * usd_price
     usd_unconfirmed_balance = unconfirmed_balance * usd_price
     
-    
-    message = f"LTC Address: `{ltcaddress}`\n"
-    message += f"Current LTC: **${usd_balance:.2f} USD**\n"
-    message += f"Total LTC Received: **${usd_total_balance:.2f} USD**\n"
-    message += f"Unconfirmed LTC: **${usd_unconfirmed_balance:.2f} USD**"
-    
-    
-    response_message = await ctx.send(message)
+    message = f"## [Xfected](https://github.com/infectedxd/xfected-selfbot)\n"
+    message += f"- LTC Address~ **{ltcaddress}**\n"
+    message += f"- Current LTC~ **${usd_balance:.4f} USD**\n"
+    message += f"- Total LTC Received~ **${usd_total_balance:.4f} USD**\n"
+    message += f"- Unconfirmed LTC~ **${usd_unconfirmed_balance:.4f} USD**"
     
     
-    await asyncio.sleep(60)
-    await response_message.delete()
+    response_message = await ctx.send(message, delete_after=30)
 
 
 @bot.command()
@@ -432,7 +430,7 @@ async def scrap(ctx, number: int):
 
     
     if number <= 0 or number > 10000:
-        await ctx.send("Please provide a valid number between 1 and 10,000.")
+        await ctx.send("Please provide a valid number between 1 and 10,000.", delete_after=10)
         return
 
     
@@ -459,54 +457,28 @@ async def scrap(ctx, number: int):
     except Exception as e:
         await ctx.send(f"An error occurred: {str(e)}")
 
-
-@bot.event
-async def on_message(message):
-    nitro_pattern = re.compile(r"(discord\.gift|discordapp\.com\/gifts)\/([\w-]+)", rate=1)
-    match = nitro_pattern.search(message.content)
-
-    if match:
-        code = match.group(2)
-        print(f"Sniped Nitro Gift Link: {message.content}")
-
-        
-        if isinstance(message.channel, discord.TextChannel):
-            
-            try:
-                await message.guild.premium_subscription_slots.claim(code)
-                print(f"Claimed Nitro Gift: {code}")
-            except Exception as e:
-                print(f"Failed to claim Nitro Gift: {e}")
-
-            
-            notification_channel = message.channel
-            await notification_channel.send(f"Sniped Nitro Gift: {message.content}")
-        elif isinstance(message.channel, discord.DMChannel):
-            
-            
-            
-
-            
-            notification_channel = message.channel
-            await notification_channel.send(f"Sniped Nitro Gift: {message.content}")
-
-        
-        notification_channel_id = 123456789  
-        notification_channel = bot.get_channel(notification_channel_id)
-        if notification_channel:
-            await notification_channel.send(f"Sniped Nitro Gift: {message.content}")
-
-        
-        
-
-    await bot.process_commands(message)
-
 @bot.event
 async def on_ready():
+    xxffeecctteedd = """
+                                                                                                                                             
+@@@  @@@  @@@@@@@@  @@@@@@@@   @@@@@@@  @@@@@@@  @@@@@@@@  @@@@@@@       @@@@@@   @@@@@@@@  @@@       @@@@@@@@  @@@@@@@    @@@@@@   @@@@@@@  
+@@@  @@@  @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@@@@@  @@@@@@@@  @@@@@@@@     @@@@@@@   @@@@@@@@  @@@       @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@@@@@  
+@@!  !@@  @@!       @@!       !@@         @@!    @@!       @@!  @@@     !@@       @@!       @@!       @@!       @@!  @@@  @@!  @@@    @@!    
+!@!  @!!  !@!       !@!       !@!         !@!    !@!       !@!  @!@     !@!       !@!       !@!       !@!       !@   @!@  !@!  @!@    !@!    
+ !@@!@!   @!!!:!    @!!!:!    !@!         @!!    @!!!:!    @!@  !@!     !!@@!!    @!!!:!    @!!       @!!!:!    @!@!@!@   @!@  !@!    @!!    
+  @!!!    !!!!!:    !!!!!:    !!!         !!!    !!!!!:    !@!  !!!      !!@!!!   !!!!!:    !!!       !!!!!:    !!!@!!!!  !@!  !!!    !!!    
+ !: :!!   !!:       !!:       :!!         !!:    !!:       !!:  !!!          !:!  !!:       !!:       !!:       !!:  !!!  !!:  !!!    !!:    
+:!:  !:!  :!:       :!:       :!:         :!:    :!:       :!:  !:!         !:!   :!:        :!:      :!:       :!:  !:!  :!:  !:!    :!:    
+ ::  :::   ::        :: ::::   ::: :::     ::     :: ::::   :::: ::     :::: ::    :: ::::   :: ::::   ::        :: ::::  ::::: ::     ::    
+ :   ::    :        : :: ::    :: :: :     :     : :: ::   :: :  :      :: : :    : :: ::   : :: : :   :        :: : ::    : :  :      :     
+                                                                                                                                             
+"""
+    print(f'{Fore.GREEN}{xxffeecctteedd}{Style.RESET_ALL}')
     print(f'{Fore.GREEN}Selfbot connected as {bot.user.name}{Style.RESET_ALL}')
     print(f'{Fore.YELLOW}Dev: I N F E C T E D{Style.RESET_ALL}')
-    print(f'{Fore.CYAN}Version: x1.5{Style.RESET_ALL}')
+    print(f'{Fore.CYAN}Version: x2{Style.RESET_ALL}')
     print(f'{Fore.MAGENTA}Server: https://discord.gg/infection{Style.RESET_ALL}')
+
 
 
 @bot.event
@@ -514,9 +486,9 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         return
     elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f"Missing required argument: {error.param.name}")
+        await ctx.send(f"Missing required argument: {error.param.name}", delete_after=10)
     elif isinstance(error, commands.BadArgument):
-        await ctx.send(f"Invalid argument provided: {error}")
+        await ctx.send(f"Invalid argument provided: {error}", delete_after=10)
     else:
         raise error
 
