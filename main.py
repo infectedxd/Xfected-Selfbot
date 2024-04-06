@@ -20,9 +20,6 @@ from colorama import Fore, Style
 
 colorama.init()
 
-intents = discord.Intents.default()
-intents.voice_states = True
-
 auto_messages = {}
 
 
@@ -40,8 +37,8 @@ def save_autoresponder_data(data):
 
 infection = int(config("userid"))
 AUTHORIZED_USERS = [infection]  
-
-bot = commands.Bot(command_prefix='.', self_bot=True, help_command=None, intents=intents)
+prefix = config('PREFIX', default='')
+bot = commands.Bot(command_prefix=prefix, self_bot=True, help_command=None)
 
 fake = Faker()
 
