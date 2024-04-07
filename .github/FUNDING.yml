@@ -1,0 +1,17 @@
+github: 
+  sponsors:
+    - username: infectedxd
+      tiers:
+        - name: Sponsors
+          description: Sponsors Xfected
+          monthly_price: 5
+  custom:
+    - name: Bitcoin
+      description: Support via Bitcoin
+      url: bitcoin:bc1qa8m7fzvkszsnz4qf8jhceeu59hry0t5smftz0j
+    - name: Litecoin
+      description: Support via Litecoin
+      url: litecoin:LPR7wDfza6PbGfLBsoXH8wwoErbLBB3SUg
+    - name: Ethereum
+      description: Support via Ethereum (BEP 20)
+      url: ethereum:0x5a362a124CdE1Dc25eafb793A792E626a5661E23
