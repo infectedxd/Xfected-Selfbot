@@ -401,6 +401,70 @@ async def getbal(ctx, ltcaddress):
     
     response_message = await ctx.send(message, delete_after=30)
 
+@bot.command()
+async def gayrate(ctx, user: discord.Member = None):
+    if user is None:
+        user = ctx.author
+
+    if user.id == 1127377098647023758:
+        xfecgay = 0
+    else:
+        xfecgay = random.randint(0, 100)
+    resp = f"{user.mention} is {xfecgay}% gay"
+
+    await ctx.reply(resp, delete_after=60)
+
+@bot.command()
+async def scamrate(ctx, user: discord.Member = None):
+    if user is None:
+        user = ctx.author
+        
+    if user.id == 1127377098647023758:
+        xfecscam = 0
+    else:
+        xfecscam = random.randint(0, 105)
+
+    if xfecscam == 0:
+        resp = f"{user.mention} is 100% trusted"
+    elif xfecscam < 20:
+        resp = f"{user.mention} has a low scam rate of {xfecscam}%, You can go first with em"
+    elif xfecscam < 50:
+        resp = f"{user.mention} has a mid scam rate of {xfecscam}%. Use any MM when dealing with them"
+    elif xfecscam < 80:
+        resp = f"{user.mention} has a high scam rate of {xfecscam}%. Use trusted MM only"
+    else:
+        resp = f"{user.mention} is a poor scammer with a scam rate of {xfecscam}%, Stay away and block this dalit"
+
+    await ctx.reply(resp, delete_after=60)
+    
+roapi = "https://evilinsult.com/generate_insult.php"
+
+@bot.command()
+async def roast(ctx, user: discord.Member = None):
+    if user is None:
+        user = ctx.author
+
+    if user.id == 1127377098647023758:
+        await ctx.reply("You want to roast your daddy?", delete_after=60)
+        return
+
+    params = {
+        "lang": "en",
+        "type": "json"
+    }
+
+    try:
+        response = requests.get(roapi, params=params)
+        if response.status_code == 200:
+            insult_data = response.json()
+            roast = insult_data["insult"]
+            await ctx.reply(f"{user.mention}, {roast}", delete_after=60)
+        else:
+            await ctx.reply("API Ratelimit", delete_after=10)
+    except Exception as e:
+        print("Error:", e)
+        await ctx.reply("Try again later", delete_after=10)
+
 
 @bot.command(description="scrape msges")
 async def scrap(ctx, limit: int = 10000):
