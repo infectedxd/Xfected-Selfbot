@@ -56,7 +56,7 @@ infection = int(config("userid"))
 AUTHORIZED_USERS = [infection]  
 prefix = config('prefix', default='')
 bot = commands.Bot(command_prefix=prefix, self_bot=True, help_command=None)
-
+xfected_version = "v2.1.0"
 fake = Faker()
 
 def is_authorized(ctx):
@@ -401,7 +401,7 @@ async def getbal(ctx, ltcaddress):
     
     response_message = await ctx.send(message, delete_after=30)
 
-@bot.command()
+@bot.command(description="rate anyones level of gayness")
 async def gayrate(ctx, user: discord.Member = None):
     if user is None:
         user = ctx.author
@@ -414,7 +414,7 @@ async def gayrate(ctx, user: discord.Member = None):
 
     await ctx.reply(resp, delete_after=60)
 
-@bot.command()
+@bot.command(description="rate anyones scammin abilities")
 async def scamrate(ctx, user: discord.Member = None):
     if user is None:
         user = ctx.author
@@ -439,7 +439,7 @@ async def scamrate(ctx, user: discord.Member = None):
     
 roapi = "https://evilinsult.com/generate_insult.php"
 
-@bot.command()
+@bot.command(description="roasts someone")
 async def roast(ctx, user: discord.Member = None):
     if user is None:
         user = ctx.author
@@ -515,7 +515,7 @@ ____  ___ _____              __             .___
       \_/          \/     \/          \/     \/\n""".replace('█', f'{b}█{y}'))
         print(f"""{y}-----------------------------------------------------\n{w}infectedxd {b}|{w} https://discord.gg/infection {b}|{w} https://github.com/infectedxd {b}|{w} https://solo.to/infected7 {b}|{w} https://infected.store {b}\n-----------------------------------------------------\n""")
         print(f"{y}[{b}+{y}]{w} Xfected Stats")
-        print(f"{y}[{b}+{y}]{w} Version > 2")
+        print(f"{y}[{b}+{y}]{w} Version > v2")
         print(f"{y}[{b}+{y}]{w} Connected As > @{bot.user.name}")
         print(f"{y}[{b}+{y}]{w} User ID > {bot.user.id}")
         print(f"{y}[{b}+{y}]{w} Settings")
@@ -523,7 +523,39 @@ ____  ___ _____              __             .___
         print(f"{y}[{b}+{y}]{w} Cached Users > {len(bot.users)}")
         print(f"{y}[{b}+{y}]{w} Cached Guilds > {len(bot.guilds)}")
         
-    xfectascitit()     
+    xfectascitit()
+    
+    def check_latest_version(repo_owner, repo_name):
+        url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            release_info = response.json()
+            latest_version = release_info['tag_name']
+            return latest_version
+        else:
+            return None
+
+    def call_check_repo():
+        global xfected_version
+        repo_owner = "infectedxd"
+        repo_name = "Xfected-Selfbot"
+        current_version = xfected_version
+        
+        latest_version = check_latest_version(repo_owner, repo_name)
+        if latest_version:
+            if not latest_version == current_version:
+                b = Fore.LIGHTMAGENTA_EX
+                y = Fore.MAGENTA
+                w = Fore.WHITE
+                print(f"{y}[{b}+{y}]{w} You are using old version ", current_version)
+                print(f"{y}[{b}+{y}]{w} Latest Version Detected: {latest_version}\nhttps://github.com/infectedxd/Xfected-Selfbot/releases/tag/{latest_version}")
+                
+
+    try:
+        call_check_repo()
+    except Exception as e:
+        print(f"Error while trying to check the last Xfected version: {e}") 
 
 @bot.event
 async def on_message(message):
@@ -535,7 +567,6 @@ async def on_message(message):
     if content in autoresponder_data:
         response = autoresponder_data[content]
         await message.channel.send(response)
-
     await bot.process_commands(message)  
 
 infected = config('token')
