@@ -34,6 +34,7 @@ import psutil
 import platform
 import colorama
 from colorama import Fore, Style
+import subprocess
 
 colorama.init()
 
@@ -56,7 +57,7 @@ infection = int(config("userid"))
 AUTHORIZED_USERS = [infection]  
 prefix = config('prefix', default='')
 bot = commands.Bot(command_prefix=prefix, self_bot=True, help_command=None)
-xfected_version = "v2.1.0"
+xfected_version = "v2.1.1"
 fake = Faker()
 
 def is_authorized(ctx):
@@ -497,7 +498,7 @@ async def scrap(ctx, limit: int = 10000):
 
 @bot.event
 async def on_ready():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    subprocess.call('cls' if os.name == 'nt' else 'clear', shell=True)
     ctypes.windll.kernel32.SetConsoleTitleW("Xfected Selfbot")
     colorama.init() 
     
