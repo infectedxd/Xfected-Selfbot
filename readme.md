@@ -1,4 +1,7 @@
 # Xfected Selfbot
+![GitHub Release](https://img.shields.io/github/v/release/infectedxd/Xfected-Selfbot)
+![GitHub Repo stars](https://img.shields.io/github/stars/infectedxd/Xfected-Selfbot?style=flat)
+[![CodeFactor](https://www.codefactor.io/repository/github/infectedxd/xfected-selfbot/badge/main)](https://www.codefactor.io/repository/github/infectedxd/xfected-selfbot/overview/main)
 
 Xfected 2.0 is a Discord selfbot written in Python 
 It requires the user to provide their user ID and a token in the env.
