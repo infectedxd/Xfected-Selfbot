@@ -90,7 +90,7 @@ infection = int(config("userid"))
 AUTHORIZED_USERS = [infection]  
 prefix = config('prefix', default='')
 bot = commands.Bot(command_prefix=prefix, self_bot=True, help_command=None)
-xfected_version = "v2.1.1"
+xfected_version = "v2.2.0"
 fake = Faker()
 
 def is_authorized(ctx):
