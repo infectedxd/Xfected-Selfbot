@@ -54,7 +54,19 @@ It requires the user to provide their user ID and a token in the env.
 
 ## Contributing
 
-Contributions are welcome! If you find any issues or want to add new features to the selfbot, feel free to create a pull request
+<table align="center">
+  <tr>
+    <td align="center">
+      <a href="https://github.com/infectedxd">
+        <img src="https://avatars.githubusercontent.com/u/122211933?v=4" alt="I N F E C T E D" width="80px" height="80px" style="border-radius: 50%;">
+        <br>
+        @infectedxd
+      </a>
+    </td>
+<table>
+
+# Support
+- Discord server~ [https://discord.gg/infection](https://discord.gg/infection)
 
 ## License
 
