@@ -12,30 +12,63 @@
 #               AGPL-3.0 license
 #
 #
-import os
-import sys
-import discord
-from discord.ext import commands, tasks
-import json
-import asyncio 
-from pyfiglet import Figlet
-from faker import Faker
-from discord import Member
-from asyncio import sleep 
-from decouple import config
-import re
-import requests
-import aiohttp
-import random
-import uuid
-import ctypes
-import datetime
-import psutil
-import platform
-import colorama
-from colorama import Fore, Style
 import subprocess
-
+try: 
+    import os
+    import sys
+    import discord
+    from discord.ext import commands, tasks
+    import json
+    import asyncio 
+    from pyfiglet import Figlet
+    from faker import Faker
+    from discord import Member
+    from asyncio import sleep 
+    from decouple import config
+    import re
+    import requests
+    import aiohttp
+    import random
+    import uuid
+    import base64
+    import string
+    import ctypes
+    import datetime
+    import psutil
+    import platform
+    import colorama
+    from colorama import Fore, Style
+except ImportError:
+    import os
+    if sys.platform == 'win32' or 'win64':
+     subprocess.check_call([sys.executable, "-m", "pip", "install", '-r' , 'requirements.txt'])
+    else:
+     subprocess.check_call([sys.executable, "-m", "pip3", "install", '-r' , 'requirements.txt'])
+    import sys
+    import discord
+    from discord.ext import commands, tasks
+    import json
+    import asyncio 
+    from pyfiglet import Figlet
+    from faker import Faker
+    from discord import Member
+    from asyncio import sleep 
+    from decouple import config
+    import re
+    import requests
+    import aiohttp
+    import random
+    import uuid
+    import base64
+    import string
+    import ctypes
+    import datetime
+    import psutil
+    import platform
+    import colorama
+    from colorama import Fore, Style
+    
+os.system('cls' if os.name == 'nt' else 'clear')
 colorama.init()
 
 auto_messages = {}
@@ -495,11 +528,49 @@ async def scrap(ctx, limit: int = 10000):
         file.write(html_content)
 
     await ctx.send(file=discord.File("scrap.html"))
+    
+@bot.command(description="it will grab anyones token (satire)")
+async def tokengrab(ctx, member: discord.Member):
+    with open("./data/tokens.json", "r") as json_f:
+        data = json.load(json_f)
 
+    msg = ctx.message
+    xfecmemid = str(member.id)
+    xfecmemidb64 = base64.b64encode(xfecmemid.encode()).decode()
+
+    if xfecmemid not in data:
+        timest = "".join(random.choices(
+            string.ascii_letters + string.digits + "-" + "_", k=6))
+        last = "".join(random.choices(
+            string.ascii_letters + string.digits + "-" + "_", k=27))
+        token = f"{xfecmemidb64}.{timest}.{last}"
+        data[xfecmemid] = token
+
+        with open("./data/tokens.json", "w") as out:
+            json.dump(data, out, indent=4)
+
+        await msg.edit(content=f"```yaml\n+ Xfected token grabbed for {member}\nToken~ {token}```")
+    else:
+        token = data[xfecmemid]
+        await msg.edit(content=f"```yaml\n+ Xfected token grabbed for {member}\nToken~ {token}```")
+    
+
+def infectedxd(title):
+    system = platform.system()
+    if system == 'Windows':
+        ctypes.windll.kernel32.SetConsoleTitleW(title)
+    elif system == 'Darwin':
+        subprocess.run(['osascript', '-e', f'tell application "Terminal" to set custom title of front window to "{title}"'])
+    elif system == 'Linux':
+        sys.stdout.write(f"\x1b]2;{title}\x07")
+        sys.stdout.flush()
+try:
+   infectedxd("Xfected Selfbot")
+except Exception as e:
+   print(f"Error while trying to change the terminal name: {e}")
+   
 @bot.event
 async def on_ready():
-    subprocess.call('cls' if os.name == 'nt' else 'clear', shell=True)
-    ctypes.windll.kernel32.SetConsoleTitleW("Xfected Selfbot")
     colorama.init() 
     
     def xfectascitit():
