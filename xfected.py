@@ -169,7 +169,7 @@ async def help(ctx, *, cmdname=None):
         sortcmds = sorted(cmdlist, key=lambda x: x.name)
 
         hmsg = "**# X F E C T E D**\n"
-        hmsg += f"- {prefix}help <cmds> for info\n\n"
+        hmsg += f"- **{prefix}help** `<cmds>` for info\n\n"
 
         for i, command in enumerate(sortcmds):
             hmsg += f"***{command.name}*** , " if command.description else f"***{command.name}*** , "
@@ -177,11 +177,16 @@ async def help(ctx, *, cmdname=None):
         hmsg = hmsg[:-2]
         await ctx.send(hmsg, delete_after=60)
     else:
-        command = bot.get_command(cmdname)
-        if command:
-            await ctx.send(f"***{command.name}*** ~ _{command.description}_\n" if command.description else f"***{command.name}***\n", delete_after=30)
-        else:
-            await ctx.send("No Cmds Found", delete_after=10)
+        sorted_commands = sorted(bot.commands, key=lambda x: x.name)
+        command = discord.utils.get(sorted_commands, name=cmdname)
+        if not command:
+            await ctx.send(f"Command `{cmdname}` not found.")
+            return
+
+        help_message = f"\n# Xfected SELFBOT - {command.name} Command\n\n"
+        help_message += f"**__{command.name}__** : {command.description}\n"
+        help_message += f"- _`{ctx.prefix}{command.name} {command.signature}`_\n"
+        await ctx.send(help_message, delete_after=20)
 
 @bot.command(aliases=['reboot'], description="restart the Xfected")
 async def restart(ctx):
