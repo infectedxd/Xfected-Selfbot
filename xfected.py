@@ -90,7 +90,7 @@ infection = int(config("userid"))
 AUTHORIZED_USERS = [infection]  
 prefix = config('prefix', default='')
 bot = commands.Bot(command_prefix=prefix, self_bot=True, help_command=None)
-xfected_version = "v2.2.0"
+xfected_version = "v2.2.5"
 fake = Faker()
 
 def is_authorized(ctx):
@@ -177,16 +177,15 @@ async def help(ctx, *, cmdname=None):
         hmsg = hmsg[:-2]
         await ctx.send(hmsg, delete_after=60)
     else:
-        sorted_commands = sorted(bot.commands, key=lambda x: x.name)
-        command = discord.utils.get(sorted_commands, name=cmdname)
+        command = bot.get_command(cmdname)
         if not command:
-            await ctx.send(f"Command `{cmdname}` not found.")
+            await ctx.send(f"Cmd `{cmdname}` not found", delete_after=10)
             return
 
-        help_message = f"\n# Xfected SELFBOT - {command.name} Command\n\n"
-        help_message += f"**__{command.name}__** : {command.description}\n"
-        help_message += f"- _`{ctx.prefix}{command.name} {command.signature}`_\n"
-        await ctx.send(help_message, delete_after=20)
+        xfechelpmsg = f"# Xfected Selfbot\n"
+        xfechelpmsg += f"**{command.name}** : _{command.description}_\n"
+        xfechelpmsg += f"- _`{prefix}{command.name} {command.signature}`_\n"
+        await ctx.send(xfechelpmsg, delete_after=20)
 
 @bot.command(aliases=['reboot'], description="restart the Xfected")
 async def restart(ctx):
